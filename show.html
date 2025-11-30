@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+  <title>Topic Show</title>
+  <!-- 引入外部资源 -->
+  <script src="../js/tailwindcss.js"></script>
+  <link href="../css/font-awesome.min.css" rel="stylesheet">
+  <script src="js/json5.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/lang.js"></script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .media-item {
+        @apply absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out;
+      }
+      .media-item.active {
+        @apply opacity-100 z-10;
+      }
+      .control-panel {
+        @apply fixed bottom-6 left-0 right-0 flex justify-center gap-4 z-50 transition-all duration-300;
+      }
+      .control-btn {
+        @apply px-6 py-3 rounded-full bg-black/70 text-white hover:bg-black transition-all duration-300 flex items-center gap-2 backdrop-blur-sm;
+      }
+      .slide-indicator {
+        @apply w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-all duration-300 cursor-pointer;
+      }
+      .slide-indicator.active {
+        @apply bg-white scale-125;
+      }
+      .fullscreen-hidden {
+        @apply hidden !important;
+      }
+      .error-message {
+        @apply absolute inset-0 flex items-center justify-center bg-black text-white text-xl z-20;
+      }
+      .resolution-display {
+        @apply fixed top-4 left-4 px-3 py-1.5 rounded-md bg-black/70 text-white text-sm z-50 transition-all duration-300 backdrop-blur-sm;
+      }
+      video, img {
+        @apply w-full h-full object-cover;
+      }
+      .lang-switcher {
+            @apply fixed top-4 right-4 z-50 flex gap-2; /* 固定定位 + 层级置顶 */
+       }
+      .lang-btn {
+            @apply px-4 py-2 rounded-lg border bg-white/40 transition-all duration-300 hover:bg-gray-100;
+        }
+        .lang-btn.active {
+            @apply bg-[#4F46E5] text-white border-[#4F46E5];
+      }
+    }
+  </style>
+</head>
+<body class="overflow-hidden bg-black m-0 p-0">
+  <!-- 语言选择区域 -->
+  <div class="flex justify-end mb-8 lang-switcher" id="langSwitcher">
+    <span class="control-btn" id="topicName"></span>
+    <a class="control-btn" id="homePage" href="./index.html">首页</a>
+    <button id="lang-zh-CN" class="lang-btn active mr-3">中文</button>
+    <button id="lang-en-US" class="lang-btn">English</button>
+  </div>
+  <!-- 媒体轮播容器 -->
+  <div id="mediaContainer" class="fixed inset-0 w-full h-full">
+    <!-- 媒体内容将通过JS动态加载 -->
+  </div>
+
+  <!-- 屏幕分辨率显示区域 -->
+  <div id="resolutionDisplay" class="resolution-display">
+    <span id="resolution">分辨率：</span><span id="resolutionValue">1920×1080</span>
+  </div>
+
+  <!-- 控制按钮面板 -->
+  <div id="controlPanel" class="control-panel">
+    <button id="prevBtn" class="control-btn">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <button id="playPauseBtn" class="control-btn">
+      <i class="fa fa-pause"></i>
+      <span id="pauseTxt">暂停</span>
+    </button>
+    <button id="nextBtn" class="control-btn">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+    <button id="fullscreenBtn" class="control-btn">
+      <i class="fa fa-expand"></i>
+      <span id="fullscreenTxt">进入全屏</span>
+    </button>
+    <button id="refreshBtn" class="control-btn">
+      <i class="fa fa-refresh"></i>
+      <span id="refreshTxt">刷新页面</span>
+    </button>
+    <button id="refreshImg" class="control-btn">
+      <i class="fa fa-image"></i>
+      <span id="reloadResTxt">刷新资源</span>
+    </button>
+  </div>
+
+  <!-- 轮播指示器 -->
+  <div id="indicators" class="fixed bottom-24 left-0 right-0 flex justify-center gap-2 z-50">
+    <!-- 指示器将通过JS动态生成 -->
+  </div>
+  <script src="js/show.js"></script>
+</body>
+</html>

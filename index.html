@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lark Signage HomePage</title>
+  <script src="js/tailwindcss.js"></script>
+  <script src="js/json5.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/lang.js"></script>
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .nav-btn {
+        @apply relative w-full px-6 py-8 rounded-xl text-white font-medium text-lg transition-all duration-300 
+               hover:scale-105 hover:shadow-lg transform hover:-translate-y-1;
+      }
+      .btn-icon {
+        @apply absolute top-4 left-4 text-xl opacity-90;
+      }
+      .btn-text {
+        @apply ml-8;
+      }
+      .lang-switcher {
+            @apply fixed top-4 right-4 z-50 flex gap-2; /* 固定定位 + 层级置顶 */
+       }
+      .lang-btn {
+            @apply px-4 py-2 rounded-lg border transition-all duration-300 hover:bg-gray-100;
+        }
+        .lang-btn.active {
+            @apply bg-[#4F46E5] text-white border-[#4F46E5];
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen font-sans">
+    <!-- 语言选择区域 -->
+    <div class="flex justify-end mb-8 lang-switcher">
+      <button id="lang-zh-CN" class="lang-btn active mr-3">中文</button>
+      <button id="lang-en-US" class="lang-btn">English</button>
+    </div>
+  <div class="container mx-auto px-4 py-12 max-w-12xl">
+    <!-- 页面标题 -->
+    <header class="text-center mb-12">
+      <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-bold text-dark mb-3" id="mainTitle"></h1>
+      <p class="text-gray-500 text-lg" id="introduce"></p>
+    </header>
+    <!-- 导航按钮区域 -->
+    <div class="grid grid-cols-1 gap-6" id="topics">
+
+    </div>
+    <!-- 页脚信息 -->
+    <footer class="text-center mt-16 text-gray-500 text-sm">
+      <p>Lark Signage &copy; 2025</p>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
