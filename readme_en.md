@@ -86,7 +86,7 @@ The configuration file is explained as follows:
 ```json
 {
     "lang": "zh-CN", // Default language: zh-CN, en-US
-    "columns":"", // Number of columns displayed in one line when the width is greater than 768px, no more than 12 columns, default is 2
+    "columns":2, // Number of columns displayed in one line when the width is greater than 768px, no more than 12 columns, default is 2
     "content":[
         // Detailed node description
         {
@@ -125,13 +125,23 @@ The configuration file is explained as follows:
 2. To modify resource content, directly modify the configuration file according to the requirements of config.txt
 3. Copy the corresponding resources to the corresponding file directory
 
+## Demonstration
+
+Upload this repository directly to a static file server, then enter the `index.html` file path of the corresponding URL to access it.
+
 # Notes
 
 1. Because the browser's built-in video parser is used, the video encoding format needs to be supported by the browser. Some TV browsers with lower versions may not be able to parse some videos.
 
 2. The display interface will show the resolution, and resource pictures or videos can be customized according to the resolution
 
-3. Browser version requirements are as follows:
+3. If icons fail to load, it may be because some static servers (such as IIS) do not support the woff2 format by default. Please configure the MIME type for the file extension `.woff2` as `font/woff2`.
+
+4. If long-term playback is required, some devices (such as tablets or TVs) may automatically lock the screen or enter sleep mode when the browser is left open for an extended period. Please disable this feature in the device settings.
+
+5. Each terminal needs to be preconfigured once. If you want it to open automatically after booting up, you need to write a corresponding script for each terminal to launch the specified page automatically.
+
+6. Browser version requirements are as follows:
 
    | Browser         | Supported Version | Remarks               |
    | --------------- | ----------------- | --------------------- |
@@ -145,4 +155,5 @@ The configuration file is explained as follows:
 
 # Other Instructions
 
-It is a small system, mainly focusing on design ideas. In terms of code implementation, it is quickly developed with AI assistance, and the UI framework uses Tailwind.
+1. It is a small system, mainly focusing on design ideas. In terms of code implementation, it is quickly developed with AI assistance, and the UI framework uses Tailwind.
+2. If you want to modify the system's built-in descriptions, simply edit the content in `js/lang.js`. The key name is the DOM element ID, and the key value is the displayed text content.

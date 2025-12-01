@@ -21,7 +21,7 @@ async function loadJSON() {
                 x.duration = isNaN(x.duration)?5:x.duration
                 x.icon = x.icon ?? ''
                 x.color = x.color ?? ''
-                x.path = x.path ?? x.topic
+                x.path = ((x.path ??'')=='')?x.topic:x.path
                 x.resList = x.resList ?? []
                 x.resRange = x.resRange ?? ["1-6.jpg", "1-2.mp4"]
                 x.detectSec = x.detectSec ?? 60;
