@@ -94,8 +94,8 @@ graph LR
             "color" :"", // 按钮颜色样式，不填则按 #4F46E5 #10B981 #F97316 #334155 #E11D48 #0EA5E9 #7C3AED #D97706 循环
             "icon" :"fa-file-text-o", // 按钮图标css，使用 tailwind的图标，不填则按 fa-file-text-o fa-image fa-video-camera fa-camera fa-film fa-microphone fa-stop-circle fa-download 循环
             "path":"房间1",   // 相对根目录的子目录名不填则和topic一样
-            "resList":["1.jpg","2.jpg","3.jpg"],  // 支持图片和视频格式，优先级比 resRange 高，默认为空
-            "resRange":["1-6.jpg","1-2.mp4"],  // 根据资源范围自动检测资源，如果不存在则会跳过，格式为:数字开始-数字结束.后缀名, 比如 001-003.jpg，表示["001.jpg","002.jpg","003.jpg"]，默认 ["1-6.jpg","1-2.mp4"]
+            "resList":["1.jpg","2.jpg","3.jpg"],  // 支持图片和视频格式，优先级比 resRange 高，默认为空，如果资源不存在则会跳过，
+            "resRange":["1-6.jpg","1-2.mp4"],  // 根据资源范围自动检测资源，如果资源不存在则会跳过，格式为:数字开始-数字结束.后缀名, 比如 001-003.jpg，表示["001.jpg","002.jpg","003.jpg"]，默认 ["1-6.jpg","1-2.mp4"]
             "detectSec": 60,  // 检测间隔秒数，多少时间读取一次配置文件，默认60秒
             "version" : 1, // 任意数字，只要检测时发现变化则刷新资源(不刷新页面)，在更新图片视频资源后，但文件名没改变时需要修改此参数，本节点的其他信息任意改变将导致整个页面重新刷新
             "duration":5, // 播放间隔秒数,默认5秒

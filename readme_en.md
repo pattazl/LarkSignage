@@ -94,8 +94,8 @@ The configuration file is explained as follows:
             "color" :"", // Button color style, if not filled, it will cycle according to #4F46E5 #10B981 #F97316 #334155 #E11D48 #0EA5E9 #7C3AED #D97706
             "icon" :"fa-file-text-o", // Button icon CSS, using Tailwind's icons, if not filled, it will cycle according to fa-file-text-o fa-image fa-video-camera fa-camera fa-film fa-microphone fa-stop-circle fa-download
             "path":"Room 1",   // Subdirectory name relative to the root directory, if not filled, it is the same as topic
-            "resList":["1.jpg","2.jpg","3.jpg"],  // Support picture and video formats, with higher priority than resRange, default is empty
-            "resRange":["1-6.jpg","1-2.mp4"],  // Automatically detect resources according to the resource range, skip if not existing. Format: start number-end number.suffix, e.g., 001-003.jpg represents ["001.jpg","002.jpg","003.jpg"], default ["1-6.jpg","1-2.mp4"]
+            "resList":["1.jpg","2.jpg","3.jpg"],  // Support picture and video formats, with higher priority than resRange, default is empty, skip if resources not existing. 
+            "resRange":["1-6.jpg","1-2.mp4"],  // Automatically detect resources according to the resource range, skip if resources not existing. Format: start number-end number.suffix, e.g., 001-003.jpg represents ["001.jpg","002.jpg","003.jpg"], default ["1-6.jpg","1-2.mp4"]
             "detectSec": 60,  // Detection interval in seconds, how often to read the configuration file, default is 60 seconds
             "version" : 1, // Any number, resources will be refreshed (without refreshing the page) if a change is detected. This parameter needs to be modified when image/video resources are updated but file names remain unchanged. Any change in other information of this node will cause the entire page to refresh
             "duration":5, // Playback interval in seconds, default is 5 seconds
