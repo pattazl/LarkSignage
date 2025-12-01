@@ -146,7 +146,7 @@ async function validateAndClassifyMedia() {
 function validateImage(url) {
   return new Promise(resolve => {
     const img = new Image();
-    const timeout = setTimeout(() => resolve(false), 5000);
+    const timeout = setTimeout(() => resolve(false), 10000);
 
     img.onload = () => {
       clearTimeout(timeout);
@@ -167,7 +167,7 @@ function validateImage(url) {
 function validateVideo(url) {
   return new Promise(resolve => {
     const video = document.createElement('video');
-    const timeout = setTimeout(() => resolve(false), 8000);
+    const timeout = setTimeout(() => resolve(false), 60000);
 
     // 只需加载元数据即可验证
     video.addEventListener('loadedmetadata', () => {

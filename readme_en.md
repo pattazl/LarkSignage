@@ -157,3 +157,4 @@ Upload this repository directly to a static file server, then enter the `index.h
 
 1. It is a small system, mainly focusing on design ideas. In terms of code implementation, it is quickly developed with AI assistance, and the UI framework uses Tailwind.
 2. If you want to modify the system's built-in descriptions, simply edit the content in `js/lang.js`. The key name is the DOM element ID, and the key value is the displayed text content.
+3. During automatic resource detection, the default timeout for image loading is 10 seconds, and for video loading is 60 seconds. If adjustments are needed, you can modify the values in the `validateVideo` and `validateImage` functions within `show.js`.
