@@ -93,7 +93,7 @@ async function init() {
   })
   // 启动定时器
   setInterval(checkUpdate, currentTopic.detectSec * 1000)
-  console.log(currentTopic.detectSec * 1000)
+  // console.log(currentTopic.detectSec * 1000)
   // 初始化分辨率显示
   updateResolution();
   // 验证所有媒体资源有效性并自动识别类型
