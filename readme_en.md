@@ -18,7 +18,7 @@ Automatically play pictures and videos through smart TVs, tablets, PC monitors, 
 
 1. Support custom multiple themes, each with independent content resources
 2. Provide a homepage, which allows selecting different pages via TV remote control, mouse, keyboard, etc.
-3. Support pictures and videos as resources, with automatic/cyclic playback
+3. Support pictures and videos as resources(Files with the .mp4 extension are treated as videos; all others are treated as images), with automatic/cyclic playback
 4. If there is only one resource, the picture will be displayed all the time, and the video will play in a loop
 5. Support automatic timed update of resource content
 6. Support forced/timed refresh to avoid caching issues
