@@ -133,7 +133,7 @@ Upload this repository directly to a static file server, then enter the `index.h
 
 1. Because the browser's built-in video parser is used, the video encoding format needs to be supported by the browser. Some TV browsers with lower versions may not be able to parse some videos.
 
-2. The display interface will show the resolution, and resource pictures or videos can be customized according to the resolution
+2. The display interface will show the resolution, and resource pictures or videos can be customized according to the resolution, The two numbers on the right side of the resolution respectively represent the page-turn countdown and the communication countdown.
 
 3. If icons fail to load, it may be because some static servers (such as IIS) do not support the woff2 format by default. Please configure the MIME type for the file extension `.woff2` as `font/woff2`.
 

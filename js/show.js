@@ -48,10 +48,10 @@ async function init() {
   }
   currentTopic = globalConfig.content[pathI];
   // 获取除版本以外其他参数
-  let {version,...copy} = currentTopic
+  let { version, ...copy } = currentTopic
   strCurrentTopic = JSON.stringify(copy)
   // 更新轮播间隔
-  IMAGE_DURATION = currentTopic.duration *1000;
+  IMAGE_DURATION = currentTopic.duration * 1000;
   // 获取文件列表
   if (currentTopic.resList.length > 0) {
     mediaDataOri = currentTopic.resList
@@ -93,6 +93,7 @@ async function init() {
   })
   // 启动定时器
   setInterval(checkUpdate, currentTopic.detectSec * 1000)
+  startCountDown('nextCommCdLeft', currentTopic.detectSec)
   // console.log(currentTopic.detectSec * 1000)
   // 初始化分辨率显示
   updateResolution();
@@ -110,7 +111,7 @@ async function init() {
   // 开始播放
   startPlayback();
 }
-function showVer(ver = currentTopic.version){
+function showVer(ver = currentTopic.version) {
   document.getElementById('topicName').innerText = currentTopic.topic + ' v' + ver
 }
 function updateResolution() {
@@ -392,6 +393,7 @@ function resetTimer() {
       nextMedia();
     }
   }, IMAGE_DURATION);
+  startCountDown('nextPageCdLeft', IMAGE_DURATION / 1000) // 开始换图倒计时
 }
 
 // 处理全屏状态变化
@@ -462,18 +464,36 @@ function newTimestamp() {
 }
 // 定时载入 json检查是否更新
 async function checkUpdate() {
+  startCountDown('nextCommCdLeft', currentTopic.detectSec) // 开始换图倒计时
   let tempConfig = await loadJSON()
   if ((tempConfig.lang ?? '') == '') {
     return
   }
   let tempCurr = tempConfig.content[pathI];
-  let {version,...copy} = tempCurr
+  let { version, ...copy } = tempCurr
   // 排除version 节点对比，如果有差异全部重载
   if (JSON.stringify(copy) != strCurrentTopic) {
     newTimestamp()
     location.reload(true)
-  }else if(version != currentTopic.version){
+  } else if (version != currentTopic.version) {
     showVer(version)
     refreshAllImg() // 强制刷新资源
   }
+}
+
+// 倒计时显示 1= 换页倒计时 2= 通讯倒计时
+function startCountDown(domName, seconds) {
+
+  let dom = document.getElementById(domName)
+  // 关键：先清除当前元素上的定时器（避免冲突）
+  clearInterval(dom.countdownTimer);
+  let current = seconds;
+  dom.textContent = current;
+
+  // 定时器存储在 span 元素的自定义属性上，确保每个元素独立
+  dom.countdownTimer = setInterval(() => {
+    current--;
+    dom.textContent = current;
+    if (current <= 0) clearInterval(dom.countdownTimer);
+  }, 1000);
 }
