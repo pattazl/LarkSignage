@@ -49,12 +49,13 @@
       .lang-btn {
             @apply px-4 py-2 rounded-lg border bg-white/40 transition-all duration-300 hover:bg-gray-100;
         }
-        .lang-btn.active {
+      .lang-btn.active {
             @apply bg-[#4F46E5] text-white border-[#4F46E5];
       }
     }
   </style>
 </head>
+
 <body class="overflow-hidden bg-black m-0 p-0">
   <!-- 语言选择区域 -->
   <div class="flex justify-end mb-8 lang-switcher" id="langSwitcher">
@@ -71,8 +72,12 @@
   <!-- 屏幕分辨率显示区域 -->
   <div id="resolutionDisplay" class="resolution-display">
     <span id="resolution">分辨率：</span><span id="resolutionValue">1920×1080</span>
-    <span id="nextPageCdLeft" class="fa fa-step-forward h-6 w-8 text-orange-500 pl-2" title="Next page countdown"></span>
-    <span id="nextCommCdLeft" class="fa fa-exchange h-6 w-8 text-blue-500 pl-2" title="Next communication countdown"></span>
+    <span class="text-orange-500" title="Next page countdown">
+      <span id="nextPageCdLeft"></span><li class="fa fa-step-forward h-4 w-4"></li>
+    </span>
+    <span class="text-blue-500" title="Next communication countdown">
+      <span id="nextCommCdLeft"></span><li class="fa fa-exchange h-4 w-4"></li>
+    </span>
   </div>
 
   <!-- 控制按钮面板 -->
@@ -107,4 +112,5 @@
   </div>
   <script src="js/show.js"></script>
 </body>
+
 </html>
