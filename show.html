@@ -50,61 +50,14 @@
             @apply px-4 py-2 rounded-lg bg-[#4F46E5] text-white border-[#4F46E5] transition-all;
         }
     }
-
-    /* 不同旋转角度的核心样式（基于原有fixed布局适配） */
-    html.fullscreen-rotate-90 {
-      width: 100vh;
-      height: 100vw;
-      overflow: hidden;
+    .rotate-90 {
       transform: rotate(90deg);
-      transform-origin: center center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 0;
-      padding: 0;
     }
-
-    html.fullscreen-rotate-180 {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+    .rotate-180 {
       transform: rotate(180deg);
-      transform-origin: center center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 0;
-      padding: 0;
     }
-
-    html.fullscreen-rotate-270 {
-      width: 100vh;
-      height: 100vw;
-      overflow: hidden;
+    .rotate-270 {
       transform: rotate(270deg);
-      transform-origin: center center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* 旋转后媒体容器适配：根据角度调整宽高 */
-    html.fullscreen-rotate-90 #mediaContainer,
-    html.fullscreen-rotate-270 #mediaContainer {
-      width: 100vh;
-      height: 100vw;
-      inset: 0;
-      transform: translate(0, 0); /* 重置偏移，避免双重位移 */
-    }
-
-    html.fullscreen-rotate-180 #mediaContainer {
-      width: 100vw;
-      height: 100vh;
-      inset: 0;
-      transform: translate(0, 0);
     }
   </style>
 

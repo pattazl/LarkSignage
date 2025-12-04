@@ -26,6 +26,7 @@ async function loadJSON() {
                 x.resRange = x.resRange ?? ["1-6.jpg", "1-2.mp4"]
                 x.detectSec = x.detectSec ?? 60;
                 x.version = x.version ?? 1;
+                x.rotate = x.rotate ?? 0;
                 x.syncPlayTime = x.syncPlayTime ?? '';
                 if(x.syncPlayTime!=''){
                     x.syncPlayTime = simpleStrToDate(x.syncPlayTime)

@@ -26,7 +26,7 @@ Automatically play pictures and videos through smart TVs, tablets, PC monitors, 
 8. Playback is realized through a browser, so supported devices only need to support browsers (TVs/tablets/PCs, etc.)
 9. Supports control via direction keys + OK key (confirmation key) for easy TV remote control operation.
 10. Supports scheduled synchronized playback across multiple devices.
-11. Supports 180° resource rotation.
+11. Supports 90°  180° 270°  resource rotation.
 12. Supports Chinese-English switching.
 
 # Network Topology
@@ -103,7 +103,7 @@ The configuration file is explained as follows:
             "version" : 1, // Any number, resources will be refreshed (without refreshing the page) if a change is detected. This parameter needs to be modified when image/video resources are updated but file names remain unchanged. Any change in other information of this node will cause the entire page to refresh
             "duration":5, // Playback interval in seconds, default is 5 seconds
             "syncPlayTime": "", // Synchronization time (format: YYYY-MM-DD HH:mm:SS). Must be later than the next check time. Used to unify the playback start time after data is detected. Defaults to empty.
-			"rotate": 180, // Page rotation angle after fullscreen. Options: 0, 90, 180, 270. Default: 0. Currently only 0 and 180 are supported.
+			"rotate": 180, // Page rotation angle after fullscreen. Options: 0, 90, 180, 270. Default: 0.
         },
         // Simplified version node as follows
          {

@@ -21,7 +21,6 @@ let mediaData = []
 // 静音标记,浏览器设置，必须静音
 let globalMute = true
 // DOM元素
-const htmlEl = document.documentElement;
 const muteBtn = document.getElementById('muteBtn');
 const homePageBtn = document.getElementById('homePage');
 const mediaContainer = document.getElementById('mediaContainer');
@@ -603,22 +602,19 @@ function toggleMute() {
 // 应用指定角度的旋转样式
 function applyRotateStyle(angle) {
   if (angle === 0) return;
-
-  htmlEl.classList.add(`fullscreen-rotate-${angle}`);
-  // 适配90/270°的宽高
-  if (angle === 90 || angle === 270) {
-    mediaContainer.style.width = '100vh';
-    mediaContainer.style.height = '100vw';
-  } else if (angle === 180) {
-    mediaContainer.style.width = '100vw';
-    mediaContainer.style.height = '100vh';
-  }
+  // 需要对全部的 media-item 对象进行旋转
+  document.querySelectorAll('.media-item').forEach((item, index) => {
+	let media = item.querySelector('img, video');
+	if(media==null)return;
+	media.classList.add(`rotate-${angle}`);
+  });
 }
 
 // 移除所有旋转样式
 function removeAllRotateClasses() {
-  htmlEl.classList.remove('fullscreen-rotate-90', 'fullscreen-rotate-180', 'fullscreen-rotate-270');
-  // 恢复媒体容器原有样式
-  mediaContainer.style.width = '100%';
-  mediaContainer.style.height = '100%';
+  document.querySelectorAll('.media-item').forEach((item, index) => {
+	let media = item.querySelector('img, video');
+	if(media==null)return;
+    media.classList.remove('rotate-90', 'rotate-180', '270');
+  });
 }
