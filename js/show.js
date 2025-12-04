@@ -18,7 +18,12 @@ let IMAGE_DURATION = 5000;
 // 时间戳，用于防止缓存
 let timestamp = ''
 let mediaData = []
+// 静音标记,浏览器设置，必须静音
+let globalMute = true
 // DOM元素
+const htmlEl = document.documentElement;
+const muteBtn = document.getElementById('muteBtn');
+const homePageBtn = document.getElementById('homePage');
 const mediaContainer = document.getElementById('mediaContainer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -111,6 +116,7 @@ async function init() {
   // 开始播放
   startPlayback();
 }
+// 显示节点的版本信息
 function showVer(ver = currentTopic.version) {
   document.getElementById('topicName').innerText = currentTopic.topic + ' v' + ver
 }
@@ -124,10 +130,9 @@ function updateResolution() {
 // 验证媒体资源并自动分类（通过URL后缀）
 async function validateAndClassifyMedia() {
   for (const media of mediaData) {
-    // 自动判断类型：.mp4后缀视为视频，其他视为图片
-    const isVideo = media.toLowerCase().endsWith('.mp4');
+    // 自动判断类型：.mp4 后缀视为视频，其他视为图片
+    const isVideo = media.toLowerCase().endsWith(`.mp4?${timestamp}`);
     const type = isVideo ? 'video' : 'image';
-
     // 验证资源有效性
     const isValid = await (type === 'image'
       ? validateImage(media)
@@ -234,8 +239,13 @@ function createIndicators() {
 
 // 设置事件监听
 function setupEventListeners() {
+  // 静音开关
+  muteBtn.addEventListener('click', toggleMute);
+  // 首页
+  homePageBtn.addEventListener('click', function () { location.href = "./index.html" });
   // 播放/暂停控制
   playPauseBtn.addEventListener('click', togglePlayback);
+
 
   // 前后切换
   prevBtn.addEventListener('click', prevMedia);
@@ -271,6 +281,20 @@ function setupEventListeners() {
           exitFullscreen();
         }
         break;
+      case 'ArrowUp':
+        switchBtn(-1);
+        e.preventDefault(); // 关闭浏览器默认行为
+        e.stopPropagation(); // 阻止事件冒泡（可选，根据需求）
+        break;
+      case 'ArrowDown':
+        switchBtn(1)
+        e.preventDefault(); // 关闭浏览器默认行为
+        e.stopPropagation(); // 阻止事件冒泡（可选，根据需求）
+        break;
+        case 'F11':
+          setTimeout(toggleFullscreen, 100);
+        break;
+
     }
   });
 
@@ -362,7 +386,13 @@ function updateMediaDisplay() {
   if (isPlaying) {
     const newMedia = getCurrentMediaElement();
     if (newMedia.tagName === 'VIDEO') {
-      newMedia.play();
+      try {
+        newMedia.muted = globalMute;
+        newMedia.play();
+      } catch (e) {
+        document.getElementById('errorHint').innerText = globalLang[globalConfig.lang]['needActive']
+      }
+
       // 多视频场景需要清除计时器，由视频结束事件控制切换
       if (validMedia.length > 1 && carouselTimer) {
         clearTimeout(carouselTimer);
@@ -386,7 +416,12 @@ function resetTimer() {
   if (carouselTimer) {
     clearTimeout(carouselTimer);
   }
-
+  // 判断是否快到了同步时间，如果是，则启动定时同步
+  let now = new Date()
+  let nextTime = new Date(now.getTime() + 2 * IMAGE_DURATION);
+  if (currentTopic.syncPlayTime > now && currentTopic.syncPlayTime < nextTime) {
+    startSyncPlayTime() // 启用较高精度定时器
+  }
   carouselTimer = setTimeout(() => {
     // 只有在播放状态且不是单视频时才自动切换
     if (isPlaying && !(validMedia.length === 1 && validMedia[0].type === 'video')) {
@@ -400,9 +435,13 @@ function resetTimer() {
 function handleFullscreenChange() {
   if (document.fullscreenElement) {
     allControls.forEach(el => el.classList.add('fullscreen-hidden'));
+    if( [90,180,270].indexOf(currentTopic.rotate) !=-1 ){
+      applyRotateStyle(currentTopic.rotate)
+    }
   } else {
     allControls.forEach(el => el.classList.remove('fullscreen-hidden'));
-    fullscreenBtn.innerHTML = '<i class="fa fa-expand"></i><span id="fullscreenTxt">进入全屏</span>';
+    fullscreenBtn.innerHTML = `<i class="fa fa-expand"></i><span id="fullscreenTxt">${globalLang[globalConfig.lang]['fullscreenTxt']}</span>`;
+    removeAllRotateClasses()
   }
 }
 
@@ -496,4 +535,90 @@ function startCountDown(domName, seconds) {
     dom.textContent = current;
     if (current <= 0) clearInterval(dom.countdownTimer);
   }, 1000);
+}
+
+// 启用较高精度定时器检测同步时间
+function startSyncPlayTime() {
+  let targetTime = currentTopic.syncPlayTime
+  clearInterval(startSyncPlayTime.highPrecisionTimer); // 清除高精度检测定时器
+  // current goToIndex(0)
+  startSyncPlayTime.highPrecisionTimer = setInterval(() => {
+    const current = Date.now();
+    if (current >= targetTime.getTime()) {
+      goToIndex(0)
+      clearInterval(startSyncPlayTime.highPrecisionTimer); // 触发后立即清除
+      startSyncPlayTime.highPrecisionTimer = null;
+    }
+  }, 10); // 10ms轮询，精度远高于setTimeout的默认4ms最小延迟
+}
+
+// 上下按钮控制焦点
+function switchBtn(flag) {
+  // 获取当前焦点，如果没有则默认第一个，循环获取
+  let currIndex = 0;
+  let btns = document.querySelectorAll('button');
+  let otherArr = []
+  let btnArr = []
+  btns.forEach(x => {
+    if (x.classList.contains('control-btn')) {
+      btnArr.push(x)
+    } else {
+      otherArr.push(x)
+    }
+  })
+  btnArr.push(...otherArr); // 非 control-btn 在最后 
+  let len = btnArr.length
+  for (let i = 0; i < len; i++) {
+    if (btnArr[i] == document.activeElement) {
+      currIndex = i
+      break;
+    }
+  }
+  let nextIndex = (currIndex + len + flag) % len;
+  btnArr[nextIndex].focus()
+}
+
+// 切换静音
+function toggleMute() {
+  let iArr = muteBtn.getElementsByTagName('i')
+  if (iArr.length == 2) {
+    if (globalMute) {
+      iArr[0].classList.remove('fa-volume-off')
+      iArr[0].classList.add('fa-volume-up')
+      iArr[1].style.display = 'none'
+      globalMute = false
+    } else {
+      iArr[0].classList.remove('fa-volume-up')
+      iArr[0].classList.add('fa-volume-off')
+      iArr[1].style.display = ''
+      globalMute = true
+    }
+    const newMedia = getCurrentMediaElement();
+    if (newMedia.tagName === 'VIDEO') {
+      newMedia.muted = globalMute
+    }
+  }
+}
+
+// 应用指定角度的旋转样式
+function applyRotateStyle(angle) {
+  if (angle === 0) return;
+
+  htmlEl.classList.add(`fullscreen-rotate-${angle}`);
+  // 适配90/270°的宽高
+  if (angle === 90 || angle === 270) {
+    mediaContainer.style.width = '100vh';
+    mediaContainer.style.height = '100vw';
+  } else if (angle === 180) {
+    mediaContainer.style.width = '100vw';
+    mediaContainer.style.height = '100vh';
+  }
+}
+
+// 移除所有旋转样式
+function removeAllRotateClasses() {
+  htmlEl.classList.remove('fullscreen-rotate-90', 'fullscreen-rotate-180', 'fullscreen-rotate-270');
+  // 恢复媒体容器原有样式
+  mediaContainer.style.width = '100%';
+  mediaContainer.style.height = '100%';
 }

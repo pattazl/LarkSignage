@@ -1,6 +1,7 @@
 {
     "lang": "zh-CN", // 默认语言 zh-CN en-US
     "columns":2, // 当宽度大于768px时一行放几列，不超过12列
+    "pageSize" : 8, // 分页用于 主题较多的情况，可以通过分页快速导航
     "content":[
         // 详细节点说
         {
@@ -8,11 +9,13 @@
             "color" :"", // 按钮颜色样式，不填则按 #4F46E5 #10B981 #F97316 #334155 #E11D48 #0EA5E9 #7C3AED #D97706 循环
             "icon" :"fa-file-text-o", // 按钮图标css，使用 tailwind的图标，不填则按 fa-file-text-o fa-image fa-video-camera fa-camera fa-film fa-microphone fa-stop-circle fa-download 循环
             "path":"房间1",   // 相对根目录的子目录名不填或为空则和topic一样
-            "resList":["1.jpg","2.jpg","3.jpg","4.jpg"],  // 支持图片和视频格式，优先级比 resRange 高，默认为空
+            "resList":[],  // 支持图片和视频格式,"1.jpg","2.jpg","3.jpg","1.mp4"，优先级比 resRange 高，默认为空
             "resRange":["1-6.jpg","1-2.mp4"],  // 资源范围，自动检测资源，如果不存在则会跳过，格式为:数字开始-数字结束.后缀名,可用001-006，表示用0补齐，默认 ["1-6.jpg","1-2.mp4"]
             "detectSec": 60,  // 检测间隔秒数，多少时间读取一次配置文件，默认60秒
             "version" : 1, // 任意数字，只要检测时发现变化则强制刷新页面资源，在更新图片视频资源后，但文件名没改变时需要修改
             "duration":5, // 播放间隔秒数
+            "syncPlayTime":'2025-12-04 20:05:30', // 同步时间,格式 YYYY-MM-DD HH:mm:SS，晚于下一次检测时间，用于检测到数据后统一播放开始时间
+            "rotate":180, // 全屏后页面旋转的角度 0 90 180 270 默认为 0 ,暂时只支持 0 180
         },
         // 简化版本节点如下
         {

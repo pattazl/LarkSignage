@@ -40,10 +40,7 @@
             @apply fixed top-4 right-4 z-50 flex gap-2; /* 固定定位 + 层级置顶 */
        }
       .lang-btn {
-            @apply px-4 py-2 rounded-lg border transition-all duration-300 hover:bg-gray-100;
-        }
-        .lang-btn.active {
-            @apply bg-[#4F46E5] text-white border-[#4F46E5];
+          @apply px-4 py-2 rounded-lg bg-[#4F46E5] text-white border-[#4F46E5] transition-all;
       }
     }
   </style>
@@ -52,8 +49,7 @@
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen font-sans">
     <!-- 语言选择区域 -->
     <div class="flex justify-end mb-8 lang-switcher">
-      <button id="lang-zh-CN" class="lang-btn active mr-3">中文</button>
-      <button id="lang-en-US" class="lang-btn">English</button>
+      <button id="lang-btn" class="lang-btn mr-3">中/En</button>
     </div>
   <div class="container mx-auto px-4 py-12 max-w-12xl">
     <!-- 页面标题 -->

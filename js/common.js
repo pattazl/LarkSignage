@@ -26,6 +26,10 @@ async function loadJSON() {
                 x.resRange = x.resRange ?? ["1-6.jpg", "1-2.mp4"]
                 x.detectSec = x.detectSec ?? 60;
                 x.version = x.version ?? 1;
+                x.syncPlayTime = x.syncPlayTime ?? '';
+                if(x.syncPlayTime!=''){
+                    x.syncPlayTime = simpleStrToDate(x.syncPlayTime)
+                }
                 temp.push(x)
             }
         })
@@ -38,12 +42,21 @@ async function loadJSON() {
 
 function initLang(lang) {
     // 绑定语言切换事件
-    document.getElementById('lang-zh-CN').addEventListener('click', () => switchLanguage('zh-CN'));
-    document.getElementById('lang-en-US').addEventListener('click', () => switchLanguage('en-US'));
+    document.getElementById('lang-btn').addEventListener('click', () => switchLanguage()); // 'zh-CN'
+    // document.getElementById('lang-en-US').addEventListener('click', () => switchLanguage('en-US'));
     switchLanguage(lang)
 }
 // 语言切换函数
 function switchLanguage(lang) {
+    if(lang==null){
+        // 进行自动切换
+        if(document.documentElement.lang =='zh-CN')
+        {
+            lang = 'en-US'
+        }else{
+            lang = 'zh-CN'
+        }
+    }
     // 进行翻译
     for (let x in globalLang[lang]) {
         let object = document.getElementById(x)
@@ -52,11 +65,9 @@ function switchLanguage(lang) {
             object.innerText = val
         }
     }
-    // 更新按钮激活状态
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`lang-${lang}`).classList.add('active');
     // 更新HTML lang属性
     document.documentElement.lang = lang;
+    globalConfig.lang = lang
 }
 // 获取URL的地址参数
 function getUrlParam(name) {
@@ -72,3 +83,15 @@ function getUrlParam(name) {
         return results ? decodeURIComponent(results[1]) : null;
     }
 }
+// 转换时间
+function simpleStrToDate(timeStr) {
+    try{
+        const [datePart, timePart] = timeStr.split(' ');
+        const [y, m, d] = datePart.split('-').map(Number);
+        const [h, mi, s] = timePart.split(':').map(Number);
+        const dt = new Date(y, m - 1, d, h, mi, s);
+        return dt
+    }catch(e){
+        return ''
+    }
+  }

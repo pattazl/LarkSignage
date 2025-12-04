@@ -10,6 +10,7 @@ const globalLang = {
         "reloadResTxt": "刷新资源", 
         "homePage": "首页", 
         "noResFound": "没有可用的媒体资源，请检查文件URL是否正确", 
+        "needActive": "视频资源播放需要操作以激活", 
             
     },
     'en-US':{
@@ -23,5 +24,6 @@ const globalLang = {
         "reloadResTxt": "Reload Resource", 
         "homePage": "Home", 
         "noResFound": "There are no available media resources. Please check!", 
+        "needActive": "Video resource playback requires action to activate", 
     }
 }
