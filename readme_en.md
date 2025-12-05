@@ -103,7 +103,7 @@ The configuration file is explained as follows:
             "detectSec": 60,  // Detection interval in seconds, how often to read the configuration file, default is 60 seconds
             "version" : 1, // Any number, resources will be refreshed (without refreshing the page) if a change is detected. This parameter needs to be modified when image/video resources are updated but file names remain unchanged. Any change in other information of this node will cause the entire page to refresh
             "duration":5, // Playback interval in seconds, default is 5 seconds
-            "syncPlayTime": "", // Synchronization time (format: YYYY-MM-DD HH:mm:SS). Must be later than the next check time. Used to unify the playback start time after data is detected. Defaults to empty.
+            "syncPlayTime":"13:50:30 14:00:30 14:15 14:14  14:17 14:18 14:19", // Mandatory start-from-beginning playback time points every day, applicable for unified playback across multiple screens. Separated by spaces, in HH:mm:SS or HH:mm format. Defaults to empty.
 			"rotate": 180, // Page rotation angle after fullscreen. Options: 0, 90, 180, 270. Default: 0.
             "videoRotate": 0, // Default value is the same as "rotate". However, set it to 0 when video rotation is not supported in some cases.
         },

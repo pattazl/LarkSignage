@@ -15,14 +15,14 @@ async function loadJSON() {
         if (isNaN(col) || col < 1 || col > 12) {
             config.columns = 2
         }
-        config.pageSize = isNaN(config.pageSize)?8:config.pageSize // 默认2列
+        config.pageSize = isNaN(config.pageSize) ? 8 : config.pageSize // 默认2列
         let temp = []
         config.content.forEach((x, i) => {
             if ((x.topic ?? '') != '') {
-                x.duration = isNaN(x.duration)?5:x.duration
+                x.duration = isNaN(x.duration) ? 5 : x.duration
                 x.icon = x.icon ?? ''
                 x.color = x.color ?? ''
-                x.path = ((x.path ??'')=='')?x.topic:x.path
+                x.path = ((x.path ?? '') == '') ? x.topic : x.path
                 x.resList = x.resList ?? []
                 x.resRange = x.resRange ?? ["1-6.jpg", "1-2.mp4"]
                 x.detectSec = x.detectSec ?? 60;
@@ -30,9 +30,7 @@ async function loadJSON() {
                 x.rotate = x.rotate ?? 0;
                 x.videoRoate = x.videoRoate ?? x.rotate; // 默认和 x.rotate一致
                 x.syncPlayTime = x.syncPlayTime ?? '';
-                if(x.syncPlayTime!=''){
-                    x.syncPlayTime = simpleStrToDate(x.syncPlayTime)
-                }
+                x.syncPlayTime = strToDateArr(x.syncPlayTime)
                 temp.push(x)
             }
         })
@@ -51,12 +49,11 @@ function initLang(lang) {
 }
 // 语言切换函数
 function switchLanguage(lang) {
-    if(lang==null){
+    if (lang == null) {
         // 进行自动切换
-        if(document.documentElement.lang =='zh-CN')
-        {
+        if (document.documentElement.lang == 'zh-CN') {
             lang = 'en-US'
-        }else{
+        } else {
             lang = 'zh-CN'
         }
     }
@@ -87,14 +84,21 @@ function getUrlParam(name) {
     }
 }
 // 转换时间
-function simpleStrToDate(timeStr) {
-    try{
-        const [datePart, timePart] = timeStr.split(' ');
-        const [y, m, d] = datePart.split('-').map(Number);
-        const [h, mi, s] = timePart.split(':').map(Number);
-        const dt = new Date(y, m - 1, d, h, mi, s);
-        return dt
-    }catch(e){
-        return ''
+function strToDateArr(timeStr) {
+    let strArr = timeStr.split(/\s+/);
+    let timArr = []
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 月份从0开始，无需+1（Date构造器直接用）
+    const day = today.getDate();
+    try {
+        strArr.forEach(x => {
+            let t = x.split(':').map(Number);
+            const dt = new Date(year, month, day, t[0], t[1], t[2] ?? 0);
+            timArr.push(dt)
+        })
+        return timArr
+    } catch (e) {
+        return []
     }
-  }
+}

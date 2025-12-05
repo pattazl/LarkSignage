@@ -427,8 +427,10 @@ function resetTimer() {
   // 判断是否快到了同步时间，如果是，则启动定时同步
   let now = new Date()
   let nextTime = new Date(now.getTime() + 2 * IMAGE_DURATION);
-  if (currentTopic.syncPlayTime > now && currentTopic.syncPlayTime < nextTime) {
-    startSyncPlayTime() // 启用较高精度定时器
+  // 从 currentTopic.syncPlayTime 中获取在时间范围的数据
+  let targetTime = currentTopic.syncPlayTime.filter( x=> x> now && x < nextTime)
+  if (targetTime.length >0 ) {
+    startSyncPlayTime(targetTime[0]) // 启用较高精度定时器
   }
   carouselTimer = setTimeout(() => {
     // 只有在播放状态且不是单视频时才自动切换
@@ -542,8 +544,7 @@ function startCountDown(domName, seconds) {
 }
 
 // 启用较高精度定时器检测同步时间
-function startSyncPlayTime() {
-  let targetTime = currentTopic.syncPlayTime
+function startSyncPlayTime(targetTime) {
   clearInterval(startSyncPlayTime.highPrecisionTimer); // 清除高精度检测定时器
   // current goToIndex(0)
   startSyncPlayTime.highPrecisionTimer = setInterval(() => {
