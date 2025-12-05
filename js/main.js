@@ -72,7 +72,7 @@ function gotoPage() {
         let icon = x.icon == '' ? iconList[i % iconList.length] : x.icon
         let color = x.color == '' ? colorList[i % colorList.length] : x.color
         html.push(`
-<a href="./show.html?i=${i}" class="nav-btn bg-[${color}] shadow-md">
+<a href="./show.html?i=${startIndex + i }" class="nav-btn bg-[${color}] shadow-md">
   <i class="fa ${icon} btn-icon"></i>
   <span class="btn-text">${x.topic}</span>
 </a>
