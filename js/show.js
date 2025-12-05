@@ -103,15 +103,15 @@ async function init() {
   updateResolution();
   // 验证所有媒体资源有效性并自动识别类型
   await validateAndClassifyMedia();
+  // 加载有效媒体
+  loadMediaItems();
+  createIndicators();
+  setupEventListeners();
   // 检查是否有有效资源
   if (validMedia.length === 0) {
     showErrorMessage(globalLang[globalConfig.lang]['noResFound']);
     return;
   }
-  // 加载有效媒体
-  loadMediaItems();
-  createIndicators();
-  setupEventListeners();
   // 开始播放
   startPlayback();
 }
@@ -193,13 +193,20 @@ function validateVideo(url) {
 
 // 加载媒体元素
 function loadMediaItems() {
+  let imgRotate = '', videoRotate = ''
+  if ([90, 180, 270].indexOf(currentTopic.rotate) != -1) {
+    imgRotate = `class="rotate-${currentTopic.rotate}"`
+  }
+  if ([90, 180, 270].indexOf(currentTopic.videoRoate) != -1) {
+    videoRotate = `class="rotate-${currentTopic.videoRoate}"`
+  }
   validMedia.forEach((media, index) => {
     const item = document.createElement('div');
     item.className = `media-item ${index === 0 ? 'active' : ''}`;
     item.dataset.index = index;
 
     if (media.type === 'image') {
-      item.innerHTML = `<img src="${media.url}" alt="${media.url}">`;
+      item.innerHTML = `<img src="${media.url}" alt="${media.url}" ${imgRotate}>`;
     } else {
       // 视频添加循环属性，但只在单视频时生效
       item.innerHTML = `
@@ -207,6 +214,7 @@ function loadMediaItems() {
             src="${media.url}" 
             ${validMedia.length === 1 ? 'loop' : ''} 
             playsinline
+            ${videoRotate}
           ></video>
         `;
 
@@ -221,6 +229,7 @@ function loadMediaItems() {
 
     mediaContainer.appendChild(item);
   });
+
 }
 
 // 创建指示器
@@ -290,8 +299,8 @@ function setupEventListeners() {
         e.preventDefault(); // 关闭浏览器默认行为
         e.stopPropagation(); // 阻止事件冒泡（可选，根据需求）
         break;
-        case 'F11':
-          setTimeout(toggleFullscreen, 100);
+      case 'F11':
+        setTimeout(toggleFullscreen, 100);
         break;
 
     }
@@ -434,13 +443,9 @@ function resetTimer() {
 function handleFullscreenChange() {
   if (document.fullscreenElement) {
     allControls.forEach(el => el.classList.add('fullscreen-hidden'));
-    if( [90,180,270].indexOf(currentTopic.rotate) !=-1 ){
-      applyRotateStyle(currentTopic.rotate)
-    }
   } else {
     allControls.forEach(el => el.classList.remove('fullscreen-hidden'));
     fullscreenBtn.innerHTML = `<i class="fa fa-expand"></i><span id="fullscreenTxt">${globalLang[globalConfig.lang]['fullscreenTxt']}</span>`;
-    removeAllRotateClasses()
   }
 }
 
@@ -597,24 +602,4 @@ function toggleMute() {
       newMedia.muted = globalMute
     }
   }
-}
-
-// 应用指定角度的旋转样式
-function applyRotateStyle(angle) {
-  if (angle === 0) return;
-  // 需要对全部的 media-item 对象进行旋转
-  document.querySelectorAll('.media-item').forEach((item, index) => {
-	let media = item.querySelector('img, video');
-	if(media==null)return;
-	media.classList.add(`rotate-${angle}`);
-  });
-}
-
-// 移除所有旋转样式
-function removeAllRotateClasses() {
-  document.querySelectorAll('.media-item').forEach((item, index) => {
-	let media = item.querySelector('img, video');
-	if(media==null)return;
-    media.classList.remove('rotate-90', 'rotate-180', '270');
-  });
 }

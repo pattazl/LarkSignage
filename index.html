@@ -61,6 +61,14 @@
     <div class="grid grid-cols-1 gap-6" id="topics">
 
     </div>
+      <!-- 底部分页按钮（Tailwind 原子化样式，无自定义CSS） -->
+  <div class="flex justify-center items-center gap-2 py-3">
+    <button id="prevBtn" disabled class="px-4 py-2 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">上一页</button>
+    <span id="pageInfo" class="mx-2 text-gray-600">1 / 0</span>
+    <button id="nextBtn" disabled class="px-4 py-2 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">下一页</button>
+    <!-- 动态页码按钮容器 -->
+    <div id="pageNumberContainer" class="flex gap-2"></div>
+  </div>
     <!-- 页脚信息 -->
     <footer class="text-center mt-16 text-gray-500 text-sm">
       <p>Lark Signage &copy; 2025</p>

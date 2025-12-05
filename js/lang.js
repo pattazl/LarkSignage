@@ -11,7 +11,8 @@ const globalLang = {
         "homePage": "首页", 
         "noResFound": "没有可用的媒体资源，请检查文件URL是否正确", 
         "needActive": "视频资源播放需要操作以激活", 
-            
+        "prevBtn": "上一页", 
+        "nextBtn": "下一页", 
     },
     'en-US':{
         "introduce": "Please select the topic you want to access.", //首页提示信息标题
@@ -25,5 +26,7 @@ const globalLang = {
         "homePage": "Home", 
         "noResFound": "There are no available media resources. Please check!", 
         "needActive": "Video resource playback requires action to activate", 
+        "prevBtn": "Previous", 
+        "nextBtn": "Next", 
     }
 }

@@ -27,7 +27,7 @@ Automatically play pictures and videos through smart TVs, tablets, PC monitors, 
 9. Supports control via direction keys + OK key (confirmation key) for easy TV remote control operation.
 10. Supports scheduled synchronized playback across multiple devices.
 11. Supports 90°  180° 270°  resource rotation.
-12. Supports Chinese-English switching.
+12. Chinese and English switching is supported, and pagination is available for navigation.
 
 # Network Topology
 
@@ -90,6 +90,7 @@ The configuration file is explained as follows:
 {
     "lang": "zh-CN", // Default language: zh-CN, en-US
     "columns":2, // Number of columns displayed in one line when the width is greater than 768px, no more than 12 columns, default is 2
+    "pageSize": 4, // For scenarios with a large number of themes, pagination enables quick navigation. Default value: 8.
     "content":[
         // Detailed node description
         {
@@ -104,6 +105,7 @@ The configuration file is explained as follows:
             "duration":5, // Playback interval in seconds, default is 5 seconds
             "syncPlayTime": "", // Synchronization time (format: YYYY-MM-DD HH:mm:SS). Must be later than the next check time. Used to unify the playback start time after data is detected. Defaults to empty.
 			"rotate": 180, // Page rotation angle after fullscreen. Options: 0, 90, 180, 270. Default: 0.
+            "videoRotate": 0, // Default value is the same as "rotate". However, set it to 0 when video rotation is not supported in some cases.
         },
         // Simplified version node as follows
          {
@@ -148,7 +150,9 @@ Upload this repository directly to a static file server, then enter the `index.h
 
 6. For video resources, due to permission restrictions, they are muted by default. Audio will be enabled only after user interaction.
 
-7. Browser version requirements are as follows:
+7. Video rotation requires support from both the device and browser; Chrome browser is recommended.
+
+8. Browser version requirements are as follows:
 
    | Browser         | Supported Version | Remarks               |
    | --------------- | ----------------- | --------------------- |

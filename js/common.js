@@ -15,6 +15,7 @@ async function loadJSON() {
         if (isNaN(col) || col < 1 || col > 12) {
             config.columns = 2
         }
+        config.pageSize = isNaN(config.pageSize)?8:config.pageSize // 默认2列
         let temp = []
         config.content.forEach((x, i) => {
             if ((x.topic ?? '') != '') {
@@ -27,6 +28,7 @@ async function loadJSON() {
                 x.detectSec = x.detectSec ?? 60;
                 x.version = x.version ?? 1;
                 x.rotate = x.rotate ?? 0;
+                x.videoRoate = x.videoRoate ?? x.rotate; // 默认和 x.rotate一致
                 x.syncPlayTime = x.syncPlayTime ?? '';
                 if(x.syncPlayTime!=''){
                     x.syncPlayTime = simpleStrToDate(x.syncPlayTime)
