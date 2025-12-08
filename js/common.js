@@ -102,3 +102,19 @@ function strToDateArr(timeStr) {
         return []
     }
 }
+// 循环按钮切换
+function switchActBtn(btnArr,flag){
+    let  currIndex= -1;
+    // 需要对btnArr 判断是否可见
+    let arr = btnArr.filter( x=> x.style?.display!="none")
+    let len = arr.length
+    for (let i = 0; i < len; i++) {
+      if (arr[i] == document.activeElement) {
+        currIndex = i
+        break;
+      }
+    }
+    let nextIndex = (currIndex + len + flag) % len;
+    arr[nextIndex].scrollIntoView()
+    arr[nextIndex].focus()
+}

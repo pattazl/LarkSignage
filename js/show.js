@@ -20,6 +20,8 @@ let timestamp = ''
 let mediaData = []
 // 静音标记,浏览器设置，必须静音
 let globalMute = true
+// 标记是否有视频
+let hasVideo = false;
 // DOM元素
 const muteBtn = document.getElementById('muteBtn');
 const homePageBtn = document.getElementById('homePage');
@@ -114,6 +116,10 @@ async function init() {
   }
   // 开始播放
   startPlayback();
+  // 根据是否有Video控制静音显示
+  if(!hasVideo){
+    muteBtn.style.display ='none'
+  }
 }
 // 显示节点的版本信息
 function showVer(ver = currentTopic.version) {
@@ -209,6 +215,7 @@ function loadMediaItems() {
       item.innerHTML = `<img src="${media.url}" alt="${media.url}" ${imgRotate}>`;
     } else {
       // 视频添加循环属性，但只在单视频时生效
+      hasVideo = true;
       item.innerHTML = `
           <video 
             src="${media.url}" 
@@ -290,14 +297,14 @@ function setupEventListeners() {
         }
         break;
       case 'ArrowUp':
-        switchBtn(-1);
         e.preventDefault(); // 关闭浏览器默认行为
         e.stopPropagation(); // 阻止事件冒泡（可选，根据需求）
+        switchBtn(-1);
         break;
       case 'ArrowDown':
-        switchBtn(1)
         e.preventDefault(); // 关闭浏览器默认行为
         e.stopPropagation(); // 阻止事件冒泡（可选，根据需求）
+        switchBtn(1)
         break;
       case 'F11':
         setTimeout(toggleFullscreen, 100);
@@ -318,7 +325,7 @@ function startPlayback() {
   // 播放当前媒体
   const currentMedia = getCurrentMediaElement();
   if (currentMedia.tagName === 'VIDEO') {
-    currentMedia.play();
+    videoPlay(currentMedia)
   }
 
   // 如果是图片或者多视频场景，设置计时器
@@ -394,12 +401,7 @@ function updateMediaDisplay() {
   if (isPlaying) {
     const newMedia = getCurrentMediaElement();
     if (newMedia.tagName === 'VIDEO') {
-      try {
-        newMedia.muted = globalMute;
-        newMedia.play();
-      } catch (e) {
-        document.getElementById('errorHint').innerText = globalLang[globalConfig.lang]['needActive']
-      }
+      videoPlay(newMedia)
 
       // 多视频场景需要清除计时器，由视频结束事件控制切换
       if (validMedia.length > 1 && carouselTimer) {
@@ -560,7 +562,6 @@ function startSyncPlayTime(targetTime) {
 // 上下按钮控制焦点
 function switchBtn(flag) {
   // 获取当前焦点，如果没有则默认第一个，循环获取
-  let currIndex = 0;
   let btns = document.querySelectorAll('button');
   let otherArr = []
   let btnArr = []
@@ -572,15 +573,7 @@ function switchBtn(flag) {
     }
   })
   btnArr.push(...otherArr); // 非 control-btn 在最后 
-  let len = btnArr.length
-  for (let i = 0; i < len; i++) {
-    if (btnArr[i] == document.activeElement) {
-      currIndex = i
-      break;
-    }
-  }
-  let nextIndex = (currIndex + len + flag) % len;
-  btnArr[nextIndex].focus()
+  switchActBtn(btnArr,flag)
 }
 
 // 切换静音
@@ -602,5 +595,14 @@ function toggleMute() {
     if (newMedia.tagName === 'VIDEO') {
       newMedia.muted = globalMute
     }
+  }
+}
+
+function videoPlay(media){
+  try {
+    media.muted = globalMute;
+    media.play();
+  } catch (e) {
+    document.getElementById('errorHint').innerText = globalLang[globalConfig.lang]['needActive']
   }
 }
