@@ -126,11 +126,12 @@ function showVer(ver = currentTopic.version) {
   document.getElementById('topicName').innerText = currentTopic.topic + ' v' + ver
 }
 function updateResolution() {
+  const dpr = window.devicePixelRatio || 1;
   // 获取屏幕实际显示分辨率（含缩放适配）
   const screenWidth = window.screen.width;
   const screenHeight = window.screen.height;
   // 格式化显示（例：1920×1080）
-  resolutionValue.textContent = `${screenWidth}×${screenHeight}`;
+  resolutionValue.textContent = `${screenWidth}×${screenHeight}(×${dpr})`;
 }
 // 验证媒体资源并自动分类（通过URL后缀）
 async function validateAndClassifyMedia() {
