@@ -202,10 +202,10 @@ function validateVideo(url) {
 function loadMediaItems() {
   let imgRotate = '', videoRotate = ''
   if ([90, 180, 270].indexOf(currentTopic.rotate) != -1) {
-    imgRotate = `class="rotate-img rotate-${currentTopic.rotate} "`
+    imgRotate = `class="rotate-fix rotate-${currentTopic.rotate} "`
   }
   if ([90, 180, 270].indexOf(currentTopic.videoRoate) != -1) {
-    videoRotate = `class="rotate-v rotate-${currentTopic.videoRoate}-v"`
+    videoRotate = `class="rotate-fix rotate-${currentTopic.videoRoate}"`
   }
   validMedia.forEach((media, index) => {
     const item = document.createElement('div');

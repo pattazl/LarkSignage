@@ -51,12 +51,14 @@
             @apply px-4 py-2 rounded-lg bg-[#4F46E5] text-white border-[#4F46E5] transition-all;
         }
     }
-    .rotate-img{
+    .rotate-fix{
       position: absolute !important;
       backface-visibility: hidden;
       top: 50% !important;
       left: 50% !important;
       transform-origin: center center !important;
+      /* 强制硬件加速，防止旋转失效 */
+      will-change: transform;
     }
     .rotate-90 {
         width: 100vh !important;   /* 90°旋转后宽高互换：原高→宽 */
@@ -71,19 +73,6 @@
         width: 100vh !important;  
         height: 100vw !important; 
         transform: translate(-50%, -50%) rotate(270deg) !important;
-    }
-    .rotate-v {
-      /* 强制硬件加速，防止旋转失效 */
-      will-change: transform;
-    }
-    .rotate-90-v {
-      transform:rotate(90deg) !important;
-    }
-    .rotate-180-v {
-      transform: rotate(180deg) !important;
-    }
-    .rotate-270-v {
-      transform:rotate(270deg) !important;
     }
   </style>
 
