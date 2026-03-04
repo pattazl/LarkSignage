@@ -1,0 +1,28 @@
+{
+    "lang": "zh-CN", // 默认语言 zh-CN en-US
+    "columns":2, // 当宽度大于768px时一行放几列，不超过12列
+    "pageSize":6,
+    "content":[
+        // 详细节点说
+        {
+            "topic":"生产看板",  // 必填，表示唯一的主题，会显示在首页按钮上
+            "path":"https://xxx",  // 必填，看板网址
+            "color" :"", // 按钮颜色样式，不填则按 #4F46E5 #10B981 #F97316 #334155 #E11D48 #0EA5E9 #7C3AED #D97706 循环
+            "icon" :"fa-file-text-o", // 按钮图标css，使用 tailwind的图标，不填则按 fa-file-text-o fa-image fa-video-camera fa-camera fa-film fa-microphone fa-stop-circle fa-download 循环
+            "refresh":120, // 自动刷新秒数，默认60秒
+        },
+        // 简化版本节点如下
+        {
+            "topic":"生产看板1", 
+            "path":"http://baidu.com",
+        },
+        {
+            "topic":"看板3", 
+            "path":"http://baidu.com"
+        },
+        {
+            "topic":"看板4", 
+            "path":"http://baidu.com"
+        }
+    ]
+}

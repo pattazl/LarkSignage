@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通用看板首页</title>
+  <script src="js/tailwindcss.js"></script>
+  <script src="js/json5.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/lang.js"></script>
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .nav-btn {
+        @apply relative w-full px-6 py-8 rounded-xl text-white font-medium text-lg transition-all duration-300 
+               hover:scale-105 hover:shadow-lg transform hover:-translate-y-1;
+        /* 核心补充：保证元素可获焦 + 清除默认焦点轮廓（避免和自定义样式冲突） */
+        outline: none;
+        /* 复用hover的所有效果到focus伪类（关键） */
+        @apply focus:scale-105 focus:shadow-lg focus:-translate-y-1;
+        /* 可选：添加焦点边框（若需要额外视觉提示，可保留/删除） */
+        @apply focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#4F46E5];
+      }
+      .btn-icon {
+        @apply absolute top-4 left-4 text-xl opacity-90;
+      }
+      .btn-text {
+        @apply ml-8;
+      }
+      .lang-switcher {
+            @apply fixed top-4 right-4 z-50 flex gap-2; /* 固定定位 + 层级置顶 */
+       }
+      .lang-btn {
+          @apply px-4 py-2 rounded-lg bg-[#4F46E5] text-white border-[#4F46E5] transition-all;
+          outline: none;
+          @apply focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#4F46E5];
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-200 to-gray-300 min-h-screen font-sans">
+  <!-- 语言选择区域 -->
+  <div class="flex justify-end mb-8 lang-switcher">
+    <button id="lang-btn" class="lang-btn mr-3">中/En</button>
+  </div>
+  <div class="container mx-auto px-4 py-12 max-w-12xl">
+    <!-- 页面标题 -->
+    <header class="text-center mb-12">
+      <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-bold text-dark mb-3" id="mainTitle"></h1>
+      <p class="text-gray-500 text-lg" id="introduce"></p>
+    </header>
+    <!-- 导航按钮区域 -->
+    <div class="grid grid-cols-1 gap-6" id="topics">
+    </div>
+    <!-- 底部分页按钮（Tailwind 原子化样式，无自定义CSS） -->
+    <div class="flex justify-center items-center gap-2 py-3">
+      <button id="prevBtn" disabled
+        class="px-4 py-2 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">上一页</button>
+      <span id="pageInfo" class="mx-2 text-gray-600">1 / 0</span>
+      <button id="nextBtn" disabled
+        class="px-4 py-2 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">下一页</button>
+      <!-- 动态页码按钮容器 -->
+      <div id="pageNumberContainer" class="flex gap-2"></div>
+    </div>
+    <!-- 页脚信息 -->
+    <footer class="text-center mt-16 text-gray-500 text-sm">
+      <p>Pattazl &copy; 2026</p>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
