@@ -1,7 +1,7 @@
 const globalLang = {
     'zh-CN':{
         "introduce": "请选择要访问的主题", //首页提示信息标题
-        "mainTitle": "鑫信腾看板导航", //首页文件标题
+        "mainTitle": "看板导航", //首页文件标题
         "resolution": "分辨率:", 
         "pauseTxt": "暂停", 
         "playTxt": "播放", 

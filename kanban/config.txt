@@ -6,10 +6,10 @@
         // 详细节点说
         {
             "topic":"生产看板",  // 必填，表示唯一的主题，会显示在首页按钮上
-            "path":"https://xxx",  // 必填，看板网址
+            "path":"https://xxx",  // 必填，看板网址,支持用 逗号分隔多个网址
             "color" :"", // 按钮颜色样式，不填则按 #4F46E5 #10B981 #F97316 #334155 #E11D48 #0EA5E9 #7C3AED #D97706 循环
             "icon" :"fa-file-text-o", // 按钮图标css，使用 tailwind的图标，不填则按 fa-file-text-o fa-image fa-video-camera fa-camera fa-film fa-microphone fa-stop-circle fa-download 循环
-            "refresh":120, // 自动刷新秒数，默认60秒
+            "refresh":120, // 自动刷新秒数，默认120秒,如果设置为0，则不刷新，有多个网址时候就是切换时间
         },
         // 简化版本节点如下
         {

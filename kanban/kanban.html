@@ -85,17 +85,14 @@
         }
 
         /* 内嵌网页容器 */
-        .iframe-container {
+        #iframe-container {
             flex: 1;
             width: 100%;
             overflow: hidden;
             border: none;
             position: relative;
         }
-
-        #dashboardIframe {
-            width: 100%;
-            height: 100%;
+        #iframe-container iframe{
             border: none;
         }
 
@@ -118,7 +115,7 @@
     <div class="header">
         <div class="header-left">
             <h1 id="mytext">仪表盘</h1>
-            <div class="refresh-countdown">自动刷新倒计时：<span id="countdown">10</span> 秒</div>
+            <div class="refresh-countdown">刷新/切换倒计时：<span id="countdown">10</span> 秒</div>
         </div>
         <div class="header-right">
             <button id="fullscreenBtn" class="control-btn">全屏显示</button>
@@ -128,14 +125,7 @@
     </div>
 
     <!-- 内嵌网页容器 -->
-    <div class="iframe-container">
-        <iframe 
-            id="dashboardIframe"
-            src="about:blank"
-            allowfullscreen
-            allow="fullscreen; autoplay"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        ></iframe>
+    <div id="iframe-container">
     </div>
 
     <script src="js/kanban.js"></script>

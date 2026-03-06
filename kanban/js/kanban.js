@@ -2,13 +2,20 @@
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 const countdownEl = document.getElementById('countdown');
-const iframe = document.getElementById('dashboardIframe');
 const gotoHome = document.getElementById('gotoHome');
+const iContainer = document.getElementById('iframe-container');
 const body = document.body;
 
+// 页面ID
+let currentIndex = 0;
+let currentIframe = null; // 当前iframe
+const config = {
+    urls: [],
+    interval: 10,   // 默认10秒刷新,从URL中获取
+    focusSecond: 10000, // 默认多久重新获得焦点
+};
 // 刷新配置
-let REFRESH_INTERVAL = 10; // 默认10秒刷新
-let countdown = REFRESH_INTERVAL;
+let countdown = config.interval;
 let countdownTimer = null;
 
 // 初始化倒计时
@@ -17,7 +24,7 @@ function initCountdown() {
     if (countdownTimer) {
         clearInterval(countdownTimer);
     }
-    countdown = REFRESH_INTERVAL;
+    countdown = config.interval;
     countdownEl.textContent = countdown;
     if (countdown == 0) {
         // 修改样式 refresh-countdown 的对象，增加 display:none
@@ -31,20 +38,22 @@ function initCountdown() {
     countdownTimer = setInterval(() => {
         countdown--;
         countdownEl.textContent = countdown;
-
         // 倒计时结束，刷新页面
         if (countdown <= 0) {
-            refreshPage();
+            refreshPage(currentIndex + 1);
         }
     }, 1000);
 }
 
 // 刷新页面（仅刷新iframe，不刷新整个页面）
-function refreshPage() {
+function refreshPage(index) {
     // 停止当前倒计时
+    if(isNaN(index)){
+        index = currentIndex
+    }
     clearInterval(countdownTimer);
     // 刷新iframe
-    iframe.src = iframe.src;
+    switchIframe(index)
     // 重新初始化倒计时
     initCountdown();
 }
@@ -96,10 +105,12 @@ function initPage() {
     let refresh = Number.parseInt(searchObj['r'])
     // 最小也要大于10秒或者不刷新
     if (!isNaN(refresh) && (refresh > 10 || refresh == 0)) {
-        REFRESH_INTERVAL = refresh
+        config.interval = refresh
     }
     let page = decodeURIComponent(searchObj['p'])
-    iframe.src = page // +'?hideHeader=1&hideSidebar=1&vc=true'
+    config.urls = page.split(',');
+    //iframe.src = page // +'?hideHeader=1&hideSidebar=1&vc=true'
+    switchIframe(0) // 首先显示第一个URL
     initCountdown();
     // 隐藏 iframe中的 dashboard-container-footer
     initKeyNav();
@@ -110,34 +121,12 @@ gotoHome.addEventListener('click', function () { location.href = './index.html' 
 refreshBtn.addEventListener('click', refreshPage); // 点击立即刷新
 window.addEventListener('load', initPage); // 页面加载完成后启动倒计时
 
-// 处理iframe加载错误（可选）
-iframe.addEventListener('error', function () {
-    alert('仪表盘页面加载失败，请检查网络或链接是否有效！');
-    // 加载失败后重置倒计时
-    initCountdown();
-});
-iframe.addEventListener('load', function () {
-    try {
-        // 获取iframe内部的document对象
-        //const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        // 控制台输出iframe的document对象
-        //console.log('iframe的document对象：', iframeDocument);
-
-        // 可选：验证是否能访问到iframe内部的DOM（比如输出body内容）
-        //console.log('iframe的body内容：', iframeDocument.body);
-    } catch (error) {
-        // 捕获跨域错误（最常见的问题）
-        console.error('无法访问iframe的document，原因：', error.message);
-        console.warn('提示：跨域的iframe无法访问其内部DOM，这是浏览器的安全限制');
-    }
-});
-
 let currentFocusIndex = -1; // 当前聚焦的button索引
 let buttons = [];
 // 设置指定索引的button为焦点
 const setFocus = (index) => {
     let btnLen = buttons.length;
-    index = (index + btnLen)%btnLen
+    index = (index + btnLen) % btnLen
     if (index < 0 || index >= buttons.length) return;
     const targetBtn = buttons[index];
     targetBtn.focus({ preventScroll: true }); // 聚焦但不滚动页面
@@ -163,7 +152,7 @@ function initKeyNav() {
             // 左方向键：切换上一个button
             case 'ArrowLeft':
                 e.preventDefault(); // 阻止默认行为（如页面左滑）
-                const prevIndex = --currentFocusIndex ;
+                const prevIndex = --currentFocusIndex;
                 setFocus(prevIndex);
                 break;
 
@@ -177,13 +166,13 @@ function initKeyNav() {
             // 上方向键：向上滚动
             case 'ArrowUp':
                 e.preventDefault();
-                iframe.focus(); // 让内容获得焦点以便于滚动
+                currentIframe.focus(); // 让内容获得焦点以便于滚动
                 break;
 
             // 下方向键：向下滚动
             case 'ArrowDown':
                 e.preventDefault();
-                iframe.focus();
+                currentIframe.focus();
                 break;
 
             // 可选：按Enter键触发当前焦点button的点击
@@ -202,5 +191,67 @@ function initKeyNav() {
     // 6. 绑定事件（支持移除）
     document.addEventListener('keydown', handleKeyDown);
     // 
-    setInterval(function(){ setFocus(currentFocusIndex)},10000); // 10秒后重新焦点
+    setInterval(function () { setFocus(currentFocusIndex) }, config.focusSecond); // 10秒后重新焦点
+}
+// 支持多个页面前后
+// 新增预加载 iframe（隐藏）
+// 修改 switchIframe 函数，先预加载再切换
+function switchIframe(index) {
+    if (index >= config.urls.length) index = 0;
+    if (index < 0) index = config.urls.length - 1;
+
+    const nextIndex = (index + 1) % config.urls.length;
+    let currUrl = config.urls[index]
+    // 切换当前页
+    // 相同页面，直接刷新
+    if (currentIndex == index && currentIframe !=null ) {
+        currentIframe.src = currUrl
+    } else {
+        // 移除第一个iframe，控制显示下一个 iframe
+        if(iContainer.children.length==2)
+        {
+            // 移除第一个
+            let firstChild = iContainer.firstElementChild;
+            iContainer.removeChild(firstChild);
+            firstChild = iContainer.firstElementChild;
+            currentIframe = firstChild
+            showDom(firstChild)
+            // 插入1个
+            let f2 = createFrame(iContainer)
+            f2.src = config.urls[nextIndex];
+            hideDom(f2)
+        }else{
+            let f1 = createFrame(iContainer)
+            showDom(f1)
+            f1.src = currUrl;
+            currentIframe = f1
+            let f2 = createFrame(iContainer)
+            hideDom(f2)
+            f2.src = config.urls[nextIndex];
+        }
+    }
+    currentIndex = index;
+}
+function hideDom(dom){
+    // dom.style.display = 'none' // 会导致显示异常
+    dom.style.width = '100px' // 宽度为10px还不行
+    dom.style.height = '100px'
+}
+function showDom(dom){
+    // dom.style.display = ''  // 部分页面会导致显示异常
+    dom.style.width = '100%' // 可以覆盖其他的 iframe
+    dom.style.height = '100%'
+}
+function createFrame(targetDiv){
+    // 2. 创建iframe元素并配置属性
+    const newIframe = document.createElement('iframe');
+    // 配置iframe的核心属性（与你提供的HTML结构一致）
+    newIframe.src = 'about:blank';
+    newIframe.setAttribute('allowfullscreen', ''); // 布尔属性直接设为空字符串即可
+    newIframe.setAttribute('allow', 'fullscreen; autoplay');
+    // newIframe.style.width = '100px';
+    // newIframe.style.height = '100px';
+    // 3. 将新iframe添加到div的最后一位子元素
+    targetDiv.appendChild(newIframe);
+    return newIframe
 }

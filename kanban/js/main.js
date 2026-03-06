@@ -100,7 +100,7 @@ function gotoPage( delta ) {
         if (path == '') {
             path = x.topic
         }
-        let refresh = x.refresh ?? '60'
+        let refresh = x.refresh ?? '120'
         let icon = x.icon == '' ? iconList[i % iconList.length] : x.icon
         let color = x.color == '' ? colorList[i % colorList.length] : x.color
         html.push(`
