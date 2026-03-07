@@ -9,11 +9,12 @@ const body = document.body;
 // 页面ID
 let currentIndex = 0;
 let currentIframe = null; // 当前iframe
-const config = {
+let config = {
     urls: [],
     interval: 10,   // 默认10秒刷新,从URL中获取
     focusSecond: 10000, // 默认多久重新获得焦点
 };
+const RefreshSwitchSecond = 10 ; // 剩余秒数<此数为刷新，>为快进到此秒数
 // 刷新配置
 let countdown = config.interval;
 let countdownTimer = null;
@@ -49,6 +50,12 @@ function initCountdown() {
 function refreshPage(index) {
     // 停止当前倒计时
     if(isNaN(index)){
+        // 刷新/切换
+        if(countdown > RefreshSwitchSecond){
+            // 快进
+            countdown = RefreshSwitchSecond
+            return
+        }
         index = currentIndex
     }
     clearInterval(countdownTimer);

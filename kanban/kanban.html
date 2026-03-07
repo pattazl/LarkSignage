@@ -96,9 +96,10 @@
             border: none;
         }
 
-        /* 全屏状态样式 */
+        /* 全屏状态样式  全屏时隐藏顶部栏  */
+        /* 
         body:fullscreen .header {
-            display: none; /* 全屏时隐藏顶部栏 */
+            display: none; 
         }
 
         body:-webkit-full-screen .header {
@@ -107,7 +108,7 @@
 
         body:-moz-full-screen .header {
             display: none;
-        }
+        }*/
     </style>
 </head>
 <body>
@@ -120,7 +121,7 @@
         <div class="header-right">
             <button id="fullscreenBtn" class="control-btn">全屏显示</button>
             <button id="gotoHome" class="control-btn">回到首页</button>
-            <button id="refreshBtn" class="control-btn">立即刷新</button>
+            <button id="refreshBtn" class="control-btn">刷新/切换</button>
         </div>
     </div>
 
