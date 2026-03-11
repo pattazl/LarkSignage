@@ -4,8 +4,10 @@ const refreshBtn = document.getElementById('refreshBtn');
 const countdownEl = document.getElementById('countdown');
 const gotoHome = document.getElementById('gotoHome');
 const iContainer = document.getElementById('iframe-container');
+const version = document.getElementById('version');
 const body = document.body;
 
+const strVersion = '1.0.1'
 // 页面ID
 let currentIndex = 0;
 let currentIframe = null; // 当前iframe
@@ -14,7 +16,9 @@ let config = {
     interval: 10,   // 默认10秒刷新,从URL中获取
     focusSecond: 10000, // 默认多久重新获得焦点
 };
-const RefreshSwitchSecond = 10 ; // 剩余秒数<此数为刷新，>为快进到此秒数
+const RefreshSwitchSecond = 10; // 剩余秒数<此数为刷新，>为快进到此秒数
+const SwitchMode1Count = 5; // 如果小于此数则开多个iframe实现，否则只开2个
+let switchModeAllFrame = 0; // 1= 表示一次性创建多个iframe 0=表示最多创建2个iframe切换
 // 刷新配置
 let countdown = config.interval;
 let countdownTimer = null;
@@ -49,9 +53,9 @@ function initCountdown() {
 // 刷新页面（仅刷新iframe，不刷新整个页面）
 function refreshPage(index) {
     // 停止当前倒计时
-    if(isNaN(index)){
+    if (isNaN(index)) {
         // 刷新/切换
-        if(countdown > RefreshSwitchSecond){
+        if (countdown > RefreshSwitchSecond) {
             // 快进
             countdown = RefreshSwitchSecond
             return
@@ -105,6 +109,7 @@ function updateFullscreenBtnText() {
     }
 }
 function initPage() {
+    version.innerHTML = strVersion
     const getSearchParams = () =>
         Object.fromEntries(new URLSearchParams(location.search));
     // 直接调用使用
@@ -116,6 +121,10 @@ function initPage() {
     }
     let page = decodeURIComponent(searchObj['p'])
     config.urls = page.split(',');
+    switchModeAllFrame = Number.parseInt(searchObj['s'])
+    if(isNaN(switchModeAllFrame)){
+        switchModeAllFrame = config.urls.length<SwitchMode1Count?1:0 // 数量少则使用全部载入iframe模式
+    }
     //iframe.src = page // +'?hideHeader=1&hideSidebar=1&vc=true'
     switchIframe(0) // 首先显示第一个URL
     initCountdown();
@@ -182,13 +191,6 @@ function initKeyNav() {
                 currentIframe.focus();
                 break;
 
-            // 可选：按Enter键触发当前焦点button的点击
-            case 'Enter':
-                if (currentFocusIndex >= 0) {
-                    buttons[currentFocusIndex].click();
-                }
-                break;
-
             default:
                 break;
         }
@@ -211,54 +213,96 @@ function switchIframe(index) {
     let currUrl = config.urls[index]
     // 切换当前页
     // 相同页面，直接刷新
-    if (currentIndex == index && currentIframe !=null ) {
+    if (currentIndex == index && currentIframe != null) {
         currentIframe.src = currUrl
     } else {
-        // 移除第一个iframe，控制显示下一个 iframe
-        if(iContainer.children.length==2)
-        {
-            // 移除第一个
-            let firstChild = iContainer.firstElementChild;
-            iContainer.removeChild(firstChild);
-            firstChild = iContainer.firstElementChild;
-            currentIframe = firstChild
-            showDom(firstChild)
-            // 插入1个
-            let f2 = createFrame(iContainer)
-            f2.src = config.urls[nextIndex];
-            hideDom(f2)
-        }else{
-            let f1 = createFrame(iContainer)
-            showDom(f1)
-            f1.src = currUrl;
-            currentIframe = f1
-            let f2 = createFrame(iContainer)
-            hideDom(f2)
-            f2.src = config.urls[nextIndex];
+        // 第一次载入
+        if (iContainer.children.length == 0) {
+            if (switchModeAllFrame == 0) {
+                let f1 = createFrame(iContainer)
+                showDom(f1)
+                f1.src = currUrl;
+                currentIframe = f1
+                let f2 = createFrame(iContainer)
+                hideDom(f2)
+                f2.src = config.urls[nextIndex];
+            } else {
+                config.urls.forEach((url, i) => {
+                    let f = createFrame(iContainer)
+                    f.src = url
+                    if (i == 0) {
+                        // 显示第一个
+                        showDom(f)
+                        currentIframe = f
+                    } else {
+                        showDom(f) // 根据顺序覆盖，不要隐藏，否则可能无法载入数据
+                    }
+                })
+
+            }
+        } else {
+            if (switchModeAllFrame == 0) {
+                // 移除第一个
+                let firstChild = iContainer.firstElementChild;
+                iContainer.removeChild(firstChild);
+                firstChild = iContainer.firstElementChild;
+                currentIframe = firstChild
+                showDom(firstChild)
+                // 插入1个
+                let f2 = createFrame(iContainer)
+                f2.src = config.urls[nextIndex];
+                hideDom(f2)
+            } else {
+                for(let i=0;i<iContainer.children.length;i++)
+                {
+                    let el = iContainer.children[i]
+                    if(i == index){
+                        showDom(el)
+                    }else{
+                        hideDom(el)
+                    }
+                }
+            }
+
         }
     }
     currentIndex = index;
 }
-function hideDom(dom){
-    // dom.style.display = 'none' // 会导致显示异常
-    dom.style.width = '100px' // 宽度为10px还不行
-    dom.style.height = '100px'
+
+function hideDom(dom) {
+    if(switchModeAllFrame == 1){
+        dom.style.display = 'none'
+    }else{
+        // 通过移除和插入实现
+    }
 }
-function showDom(dom){
-    // dom.style.display = ''  // 部分页面会导致显示异常
-    dom.style.width = '100%' // 可以覆盖其他的 iframe
-    dom.style.height = '100%'
+function showDom(dom) {
+    if(switchModeAllFrame == 1){
+        dom.style.display = ''
+    }else{
+        // 通过移除和插入实现
+    }
 }
-function createFrame(targetDiv){
+function createFrame(targetDiv) {
     // 2. 创建iframe元素并配置属性
     const newIframe = document.createElement('iframe');
     // 配置iframe的核心属性（与你提供的HTML结构一致）
     newIframe.src = 'about:blank';
     newIframe.setAttribute('allowfullscreen', ''); // 布尔属性直接设为空字符串即可
     newIframe.setAttribute('allow', 'fullscreen; autoplay');
-    // newIframe.style.width = '100px';
-    // newIframe.style.height = '100px';
+    newIframe.style.width = '100%';
+    newIframe.style.height = '100%';
     // 3. 将新iframe添加到div的最后一位子元素
     targetDiv.appendChild(newIframe);
+    newIframe.addEventListener('error', function () {
+        setTimeout(() => {
+            // 核心修正：先设为空白页（改变src值），再立即还原目标URL，强制触发重新加载
+            const currentUrl = newIframe.src; // 先保存当前要重试的URL
+            newIframe.src = 'about:blank';   // 临时修改src（触发状态重置）
+            setTimeout(() => {
+                newIframe.src = currentUrl;  // 还原URL，触发重新请求
+            }, 100); // 100ms延迟确保状态重置完成
+        }, 500);
+    });
     return newIframe
 }
