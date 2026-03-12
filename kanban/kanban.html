@@ -63,6 +63,34 @@
             gap: 10px;
         }
 
+        /* 缩放控制样式 */
+        .scale-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .scale-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background-color: #9b59b6;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        .scale-btn:hover {
+            background-color: #8e44ad;
+        }
+
+        #scale-value {
+            min-width: 40px;
+            text-align: center;
+        }
+
         /* 按钮通用样式 */
         .control-btn {
             padding: 8px 16px;
@@ -127,6 +155,11 @@
             <button id="fullscreenBtn" class="control-btn">全屏显示</button>
             <button id="gotoHome" class="control-btn">回到首页</button>
             <button id="refreshBtn" class="control-btn">刷新/切换</button>
+            <div class="scale-control">
+                <button class="scale-btn" id="scale-down">-</button>
+                <span id="scale-value">100%</span>
+                <button class="scale-btn" id="scale-up">+</button>
+            </div>
         </div>
     </div>
 

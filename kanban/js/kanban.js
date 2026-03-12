@@ -7,7 +7,20 @@ const iContainer = document.getElementById('iframe-container');
 const version = document.getElementById('version');
 const body = document.body;
 
-const strVersion = '1.0.1'
+const scaleValueEl = document.getElementById('scale-value');
+const scaleUpBtn = document.getElementById('scale-up');
+const scaleDownBtn = document.getElementById('scale-down');
+const scaleResetBtn = document.getElementById('scale-reset');
+
+
+// 常量配置
+const SCALE_STORAGE_KEY = 'dashboard_iframe_scale'; // 本地存储键名
+const DEFAULT_SCALE = 1.0; // 默认缩放比例
+const SCALE_STEP = 0.05; // 每次缩放步长
+const MIN_SCALE = 0.1; // 最小缩放比例
+const MAX_SCALE = 4.0; // 最大缩放比例
+
+const strVersion = '1.0.2'
 // 页面ID
 let currentIndex = 0;
 let currentIframe = null; // 当前iframe
@@ -16,6 +29,7 @@ let config = {
     interval: 10,   // 默认10秒刷新,从URL中获取
     focusSecond: 10000, // 默认多久重新获得焦点
 };
+let currentScale = DEFAULT_SCALE
 const RefreshSwitchSecond = 10; // 剩余秒数<此数为刷新，>为快进到此秒数
 const SwitchMode1Count = 5; // 如果小于此数则开多个iframe实现，否则只开2个
 let switchModeAllFrame = 0; // 1= 表示一次性创建多个iframe 0=表示最多创建2个iframe切换
@@ -122,10 +136,13 @@ function initPage() {
     let page = decodeURIComponent(searchObj['p'])
     config.urls = page.split(',');
     switchModeAllFrame = Number.parseInt(searchObj['s'])
-    if(isNaN(switchModeAllFrame)){
-        switchModeAllFrame = config.urls.length<SwitchMode1Count?1:0 // 数量少则使用全部载入iframe模式
+    if (isNaN(switchModeAllFrame)) {
+        switchModeAllFrame = config.urls.length < SwitchMode1Count ? 1 : 0 // 数量少则使用全部载入iframe模式
     }
     //iframe.src = page // +'?hideHeader=1&hideSidebar=1&vc=true'
+    // 当前缩放比例（初始化时读取本地存储）
+    currentScale = getStoredScale();
+    updateScale()
     switchIframe(0) // 首先显示第一个URL
     initCountdown();
     // 隐藏 iframe中的 dashboard-container-footer
@@ -149,7 +166,7 @@ const setFocus = (index) => {
     currentFocusIndex = index;
 };
 function initKeyNav() {
-    buttonSelector = '.control-btn'
+    buttonSelector = 'button'
 
     // 2. 获取目标button元素（兼容选择器/数组）
     if (typeof buttonSelector === 'string') {
@@ -253,12 +270,11 @@ function switchIframe(index) {
                 f2.src = config.urls[nextIndex];
                 hideDom(f2)
             } else {
-                for(let i=0;i<iContainer.children.length;i++)
-                {
+                for (let i = 0; i < iContainer.children.length; i++) {
                     let el = iContainer.children[i]
-                    if(i == index){
+                    if (i == index) {
                         showDom(el)
-                    }else{
+                    } else {
                         hideDom(el)
                     }
                 }
@@ -270,16 +286,16 @@ function switchIframe(index) {
 }
 
 function hideDom(dom) {
-    if(switchModeAllFrame == 1){
+    if (switchModeAllFrame == 1) {
         dom.style.display = 'none'
-    }else{
+    } else {
         // 通过移除和插入实现
     }
 }
 function showDom(dom) {
-    if(switchModeAllFrame == 1){
+    if (switchModeAllFrame == 1) {
         dom.style.display = ''
-    }else{
+    } else {
         // 通过移除和插入实现
     }
 }
@@ -306,3 +322,68 @@ function createFrame(targetDiv) {
     });
     return newIframe
 }
+
+// ========== 缩放功能核心逻辑 ==========
+
+// 从localStorage读取缩放比例，若无则使用默认值
+function getStoredScale() {
+    try {
+        const stored = localStorage.getItem(SCALE_STORAGE_KEY);
+        if (stored) {
+            const num = parseFloat(stored);
+            // 验证数值有效性，防止非法值
+            if (!isNaN(num) && num >= MIN_SCALE && num <= MAX_SCALE) {
+                return num;
+            }
+        }
+    } catch (e) {
+        console.warn('读取本地缩放比例失败:', e);
+    }
+    return DEFAULT_SCALE;
+}
+
+// 保存缩放比例到localStorage
+function saveScaleToStorage(scale) {
+    try {
+        localStorage.setItem(SCALE_STORAGE_KEY, scale.toFixed(2));
+    } catch (e) {
+        console.warn('保存缩放比例到本地失败:', e);
+    }
+}
+
+function setIframeContentScale(scale) {
+    if (!iContainer) return;
+
+    // 1. 优先使用zoom（Chrome/IE兼容）
+    const percent = Math.round(scale * 100) + '%';
+    iContainer.style.zoom = percent;
+
+    // 2. Firefox兼容：使用transform（需配合origin）
+    iContainer.style.MozTransform = `scale(${scale})`;
+    iContainer.style.MozTransformOrigin = '0 0';
+}
+// 更新缩放样式和显示
+function updateScale() {
+    // 限制缩放范围
+    currentScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, currentScale));
+    // 更新显示文本
+    const percent = Math.round(currentScale * 100);
+    scaleValueEl.textContent = `${percent}%`;
+    // 应用缩放变换
+    // iContainer.style.transform = `scale(${currentScale})`;
+    setIframeContentScale(currentScale);
+    // 保存到本地存储
+    saveScaleToStorage(currentScale);
+}
+
+// 缩放增加
+scaleUpBtn.addEventListener('click', () => {
+    currentScale += SCALE_STEP;
+    updateScale();
+});
+
+// 缩放减少
+scaleDownBtn.addEventListener('click', () => {
+    currentScale -= SCALE_STEP;
+    updateScale();
+});
